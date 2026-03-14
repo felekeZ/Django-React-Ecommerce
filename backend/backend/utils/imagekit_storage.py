@@ -3,8 +3,6 @@ from django.core.files.storage import Storage
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.deconstruct import deconstructible
 from imagekitio import ImageKit
-from pathlib import Path
-import io
 
 @deconstructible
 class ImageKitStorage(Storage):
@@ -17,7 +15,6 @@ class ImageKitStorage(Storage):
         if not self.url_endpoint:
             raise ImproperlyConfigured("IMAGEKIT_URL_ENDPOINT is not set")
         
-        # Initialize ImageKit client with just private_key (as shown in docs)
         self.imagekit = ImageKit(
             private_key=self.private_key
         )
@@ -30,31 +27,30 @@ class ImageKitStorage(Storage):
             # Read the file content
             file_content = content.read()
             
-            # Upload using the files.upload method as shown in docs
-            # The SDK accepts file as bytes, Path, or file object
+            # Upload to ImageKit
             upload_response = self.imagekit.files.upload(
-                file=file_content,  # Can be bytes, Path, or file object
+                file=file_content,
                 file_name=name,
-                folder="/products",  # Optional: organize in folders
-                use_unique_file_name=False,  # Prevent ImageKit from renaming
-                tags=["django-upload"]  # Optional tags
+                folder="/products",
+                use_unique_file_name=False,
+                tags=["django-upload"]
             )
             
-            # Based on the docs, the response has file_id and url attributes
-            # We'll store the file path/URL for later use
-            if hasattr(upload_response, 'file_id'):
-                # Store the file_id or file path
-                # You might want to store just the filename part
-                return name
+            # Check the response structure and return the FULL path including folder
+            if hasattr(upload_response, 'file_path'):
+                # If response has file_path, use it
+                return upload_response.file_path.lstrip('/')
             elif hasattr(upload_response, 'url'):
-                # If response has URL, extract the path
+                # If response has url, extract the path
                 url = upload_response.url
-                # Extract just the path part from the URL
+                # Extract everything after the url_endpoint
                 if self.url_endpoint in url:
-                    return url.replace(self.url_endpoint, '').lstrip('/')
-                return name
+                    path = url.replace(self.url_endpoint, '').lstrip('/')
+                    return path
+                return f"products/{name}"
             else:
-                return name
+                # Default to including the folder
+                return f"products/{name}"
                 
         except Exception as e:
             raise IOError(f"Failed to upload to ImageKit: {e}")
@@ -70,42 +66,29 @@ class ImageKitStorage(Storage):
         if name.startswith(('http://', 'https://')):
             return name
         
-        # Use the helper.build_url method as shown in docs
+        # Clean the name - remove any leading slash
+        clean_name = name.lstrip('/')
+        
+        # Use the helper.build_url method
         try:
             url = self.imagekit.helper.build_url(
                 url_endpoint=self.url_endpoint,
-                src=name,
-                transformation=[]  # No transformations by default
+                src=clean_name,
+                transformation=[]
             )
             return url
         except Exception:
             # Fallback to simple URL construction
-            return f"{self.url_endpoint.rstrip('/')}/{name.lstrip('/')}"
+            return f"{self.url_endpoint.rstrip('/')}/{clean_name}"
 
     def exists(self, name):
-        """
-        Check if a file exists on ImageKit.
-        The SDK doesn't have a direct method for this, so we'll return False
-        to always upload new files.
-        """
         return False
 
     def size(self, name):
-        """
-        Return the size of the file in bytes.
-        The SDK doesn't have a direct method for this.
-        """
         return 0
 
     def delete(self, name):
-        """
-        Delete the file from ImageKit.
-        You would need the file_id to delete, which we don't store.
-        """
         pass
 
     def get_available_name(self, name, max_length=None):
-        """
-        Return a filename that's available on the storage.
-        """
         return name

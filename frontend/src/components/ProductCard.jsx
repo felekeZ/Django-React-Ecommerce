@@ -3,21 +3,40 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
 
-const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_DJANGO_BASE_URL }) => {
+const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const { addToCart } = useCart();
   const CURRENCY = import.meta.env.VITE_CURRENCY || 'USD';
 
   // Construct full image URL
+  // const getImageUrl = () => {
+  //   if (product.image?.startsWith('http')) {
+  //     return product.image;
+  //   }
+    
+  //   const imagePath = product.image?.startsWith('/') ? product.image.slice(1) : product.image;
+  //   return `${baseImageUrl}/${imagePath}`;
+  // };
+  
+  // const baseImageUrlImageKit = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+  
   const getImageUrl = () => {
-    if (product.image?.startsWith('http')) {
+    // if (!product.image) return '/placeholder-image.jpg'; // Fallback for no image
+    
+    // If it's already a full URL, return as is
+    if (product.image.startsWith('http')) {
       return product.image;
     }
     
-    const imagePath = product.image?.startsWith('/') ? product.image.slice(1) : product.image;
-    return `${baseImageUrl}/${imagePath}`;
+    // Clean the image path (remove leading slash if present)
+    const cleanPath = product.image.startsWith('/') ? product.image.slice(1) : product.image;
+    
+    // Build the ImageKit URL
+    return `${baseImageUrl}/${cleanPath}`;
   };
+
+  const imageUrl = getImageUrl();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -28,7 +47,7 @@ const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_DJANGO_BASE_
       return;
     }
     addToCart(product.id);
-    toast.success(`${product.name} added to cart! 🛒`);
+    toast.success(`${product.name} added to cart!`);
   };
 
   // Format price
@@ -55,7 +74,8 @@ const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_DJANGO_BASE_
           
           {/* Product Image */}
           <img
-            src={getImageUrl()}
+            // src={getImageUrl()}
+            src={imageUrl}
             alt={product.name}
             className={`w-full h-full object-cover transition-opacity duration-300 ${
               isImageLoaded ? 'opacity-100' : 'opacity-0'

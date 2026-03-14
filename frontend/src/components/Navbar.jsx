@@ -65,7 +65,7 @@ function Navbar() {
                   ? "bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" 
                   : "text-white"
               }`}>
-                ShopHub
+                FelekeCommerce
               </span>
             </div>
           </Link>

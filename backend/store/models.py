@@ -32,7 +32,7 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(
-        storage=ImageKitStorage(),  # Now serializable
+        storage=imagekit_storage,  # Now serializable
         blank=True,
         null=True
     )

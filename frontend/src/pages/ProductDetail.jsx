@@ -24,6 +24,8 @@ const handleAddToCart = () => {
 }
   // Your backend URL
   const BACKEND_URL = import.meta.env.VITE_DJANGO_BASE_URL;
+  const BACKEND_URLImageKit = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
+
 
   // Fetch product details
   useEffect(() => {
@@ -64,7 +66,7 @@ const handleAddToCart = () => {
     if (!imagePath) return 'https://via.placeholder.com/600x600?text=No+Image';
     if (imagePath.startsWith('http')) return imagePath;
     const cleanPath = imagePath.startsWith('/') ? imagePath.slice(1) : imagePath;
-    return `${BACKEND_URL}/${cleanPath}`;
+    return `${BACKEND_URLImageKit}/products/${cleanPath}`;
   };
 
   // Mock additional images (since your backend only has one)

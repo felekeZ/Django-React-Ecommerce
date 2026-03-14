@@ -33,7 +33,7 @@ const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_IMAGEKIT_URL
     const cleanPath = product.image.startsWith('/') ? product.image.slice(1) : product.image;
     
     // Build the ImageKit URL
-    return `${baseImageUrl}/${cleanPath}`;
+    return `${baseImageUrl}/products/${cleanPath}`;
   };
 
   const imageUrl = getImageUrl();

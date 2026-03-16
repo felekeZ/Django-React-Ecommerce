@@ -133,9 +133,8 @@ function Navbar() {
                           : "text-yellow-300 group-hover:text-yellow-200"
                       }`}
                     >
-                      C
+                      Commerce
                     </span>
-                    ommerce
                   </span>
 
                   {/* Animated underline */}

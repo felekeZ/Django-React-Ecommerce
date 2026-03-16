@@ -384,7 +384,11 @@ function Navbar() {
                   </Link>
                   <Link
                     to="/register"
-                    className="w-full px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium text-sm tracking-wide hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform active:scale-95 shadow-lg"
+                    className={`w-full px-4 py-3 text-center rounded-xl font-medium text-sm tracking-wide transition-all duration-300 transform active:scale-95 ${
+                      scrolled
+                        ? "bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border-2 border-indigo-100"
+                        : "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm border border-white/20"
+                    }`}
                     onClick={handleNavigation}
                   >
                     Sign Up

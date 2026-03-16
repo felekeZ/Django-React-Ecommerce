@@ -170,7 +170,7 @@ const RegisterPage = () => {
             <div className="max-w-md w-full">
                               
                 {/* Main Card */}
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white rounded-2xl shadow-xl p-8 mt-15">
                     <form className="space-y-5" onSubmit={handleSubmit}>
                         {/* Username Field */}
                         <div>

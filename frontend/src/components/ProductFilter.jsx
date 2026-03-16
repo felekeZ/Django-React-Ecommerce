@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from 'react';
 
 const ProductFilter = ({ products, onFilterChange }) => {
+  const CURRENCY = import.meta.env.VITE_CURRENCY
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
@@ -211,7 +213,7 @@ const ProductFilter = ({ products, onFilterChange }) => {
             })}
             {priceRange.min && (
               <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                Min: ${priceRange.min}
+                Min: {CURRENCY} {priceRange.min}
                 <button
                   onClick={() => handlePriceChange('min', '')}
                   className="ml-1 text-blue-600 hover:text-blue-800"
@@ -222,7 +224,7 @@ const ProductFilter = ({ products, onFilterChange }) => {
             )}
             {priceRange.max && (
               <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
-                Max: ${priceRange.max}
+                Max: {CURRENCY} {priceRange.max}
                 <button
                   onClick={() => handlePriceChange('max', '')}
                   className="ml-1 text-blue-600 hover:text-blue-800"

@@ -7,11 +7,10 @@ const ProductList = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
+  const [, setCartItems] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const BACKEND_URL = import.meta.env.VITE_DJANGO_BASE_URL;
 
-  // Fetch products from backend
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -26,7 +25,6 @@ const ProductList = () => {
       }
 
       const data = await response.json();
-      console.log('Fetched products:', data);
       setProducts(data);
       setFilteredProducts(data);
       setError(null);

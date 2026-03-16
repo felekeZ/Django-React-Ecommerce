@@ -11,8 +11,28 @@ import RegisterPage from './pages/SignUpPage'
 import LoginPage from './pages/LoginPage'
 import { Toaster } from "react-hot-toast";
 import Footer from './components/Footer'
+import { useEffect } from 'react'
+import { getAccessToken, isTokenValid, refreshAccessToken } from './utils/auth'
 
 function App() {
+  // App.jsx or main layout component
+useEffect(() => {
+  // Check token validity every minute
+  const interval = setInterval(() => {
+    const token = getAccessToken();
+    if (token && !isTokenValid(token)) {
+      // Token is expired, try to refresh or logout
+      refreshAccessToken().then(newToken => {
+        if (!newToken) {
+          // Refresh failed, update UI
+          window.dispatchEvent(new CustomEvent('unauthorized'));
+        }
+      });
+    }
+  }, 60000); // Check every minute
+
+  return () => clearInterval(interval);
+}, []);
   return (
     <Router>
       <Navbar />

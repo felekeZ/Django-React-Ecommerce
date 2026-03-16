@@ -128,8 +128,6 @@ const RegisterPage = () => {
                     password: "",
                     password2: ""
                 });
-                
-                // Redirect to login page after 2 seconds
                 setTimeout(() => {
                     navigate("/login");
                 }, 2000);

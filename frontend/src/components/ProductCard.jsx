@@ -8,18 +8,6 @@ const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_IMAGEKIT_URL
   const [imageError, setImageError] = useState(false);
   const { addToCart } = useCart();
   const CURRENCY = import.meta.env.VITE_CURRENCY || 'USD';
-
-  // Construct full image URL
-  // const getImageUrl = () => {
-  //   if (product.image?.startsWith('http')) {
-  //     return product.image;
-  //   }
-    
-  //   const imagePath = product.image?.startsWith('/') ? product.image.slice(1) : product.image;
-  //   return `${baseImageUrl}/${imagePath}`;
-  // };
-  
-  // const baseImageUrlImageKit = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
   
   const getImageUrl = () => {
     // if (!product.image) return '/placeholder-image.jpg'; // Fallback for no image
@@ -28,8 +16,6 @@ const ProductCard = ({ product, baseImageUrl = import.meta.env.VITE_IMAGEKIT_URL
     if (product.image.startsWith('http')) {
       return product.image;
     }
-    
-    // Clean the image path (remove leading slash if present)
     const cleanPath = product.image.startsWith('/') ? product.image.slice(1) : product.image;
     
     // Build the ImageKit URL

@@ -1,15 +1,33 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
-import { removeToken, getAccessToken } from "../utils/auth";
+import { removeToken, isAuthenticated, checkAndRefreshToken } from "../utils/auth";
 
 function Navbar() {
   const { cartItems } = useCart();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated());
+  // Check token validity every minute
+  useEffect(() => {
+    const checkToken = async () => {
+      const isValid = await checkAndRefreshToken();
+      if (!isValid) {
+        setIsLoggedIn(false);
+      } else {
+        setIsLoggedIn(isAuthenticated());
+      }
+    };
 
-  const isLoggedIn = !!getAccessToken();
+    // Check immediately
+    checkToken();
+
+    // Check every minute
+    const interval = setInterval(checkToken, 840000); // 14 minutes
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Handle scroll effect
   useEffect(() => {
@@ -20,8 +38,33 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Listen for auth changes
+  useEffect(() => {
+    const handleAuthChange = () => {
+      setIsLoggedIn(isAuthenticated());
+    };
+
+    // Check immediately
+    handleAuthChange();
+
+    // Listen for custom auth events
+    window.addEventListener('auth-change', handleAuthChange);
+    window.addEventListener('unauthorized', handleAuthChange);
+    window.addEventListener('storage', handleAuthChange); // For multi-tab support
+
+    // Also check on focus (user returning to tab)
+    window.addEventListener('focus', handleAuthChange);
+
+    return () => {
+      window.removeEventListener('auth-change', handleAuthChange);
+      window.removeEventListener('unauthorized', handleAuthChange);
+      window.removeEventListener('storage', handleAuthChange);
+      window.removeEventListener('focus', handleAuthChange);
+    };
+  }, []);
+
   const handleLogout = () => {
-    removeToken();
+    removeToken(); // This dispatches 'auth-change' event
     navigate("/login");
     setIsMenuOpen(false);
   };
@@ -197,7 +240,7 @@ function Navbar() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={handleLogout}
-                    className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-medium text-sm tracking-wide"
+                    className="px-5 py-2.5 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-medium text-sm tracking-wide cursor-pointer"
                   >
                     <span className="flex items-center gap-2">
                       <svg

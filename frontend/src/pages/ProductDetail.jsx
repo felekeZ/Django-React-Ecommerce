@@ -196,13 +196,13 @@ const handleAddToCart = () => {
               )}
 
               {/* Title */}
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">
                 {product.name}
               </h1>
 
               {/* Price */}
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">
+                <span className="text-2xl font-bold text-gray-900">
                   ${formatPrice(product.price)}
                 </span>
               </div>
@@ -218,7 +218,7 @@ const handleAddToCart = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <button
                   onClick={handleAddToCart}
                   className="py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center space-x-2 cursor-pointer"

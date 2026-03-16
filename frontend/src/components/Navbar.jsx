@@ -81,7 +81,7 @@ function Navbar() {
 
                 {/* Main logo text with hover effect */}
                 <span className="relative group cursor-pointer">
-                  <span className="relative z-10">
+                  <span className={`relative z-10 ${scrolled ? "text-indigo-600" : "text-white"}`}>
                     Feleke
                     <span
                       className={`inline-block transition-all duration-300 ${
